@@ -1,0 +1,11 @@
+langchain
+langgraph
+chromadb
+transformers
+pdfplumber
+pypdf
+python-dotenv
+rich
+fastapi
+uvicorn
+huggingface_hub

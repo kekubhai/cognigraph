@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  cognigraph:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./chromadb:/app/chromadb
+    env_file:
+      - ./config/env.example
+    ports:
+      - "8000:8000"
+    command: ["python", "main.py"]
