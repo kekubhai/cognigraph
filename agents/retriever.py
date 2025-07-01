@@ -1,14 +1,13 @@
 # Retriever Agent Node
 
+from init import get_embeddings, get_chromadb_path
 import chromadb
-from chromadb.utils import embedding_functions
-from langchain.embeddings import HuggingFaceEmbeddings
 
 class RetrieverAgent:
-    def __init__(self, chroma_path: str, model_name: str):
-        self.chroma_client = chromadb.PersistentClient(path=chroma_path)
+    def __init__(self, chroma_path=None, embedder=None):
+        self.chroma_client = chromadb.PersistentClient(path=chroma_path or get_chromadb_path())
         self.collection = self.chroma_client.get_or_create_collection("documents")
-        self.embedder = HuggingFaceEmbeddings(model_name=model_name)
+        self.embedder = embedder or get_embeddings()
 
     def retrieve(self, query: str, top_k: int = 5):
         query_emb = self.embedder.embed_query(query)
@@ -16,5 +15,12 @@ class RetrieverAgent:
             query_embeddings=[query_emb],
             n_results=top_k
         )
-        # Return the text chunks
         return results["documents"][0] if results["documents"] else []
+
+def retriever_node(state):
+    agent = RetrieverAgent()
+    query = state.get("query", "")
+    top_k = state.get("top_k", 5)
+    docs = agent.retrieve(query, top_k)
+    state["documents"] = docs
+    return state

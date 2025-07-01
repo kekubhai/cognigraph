@@ -1,9 +1,9 @@
 # LangGraph workflow setup for CogniGraph
 import os
 import yaml
-from agents.planner import PlannerAgent
-from agents.retriever import RetrieverAgent
-from agents.summarizer import SummarizerAgent
+from agents.planner import PlannerAgent, planner_node
+from agents.retriever import RetrieverAgent, retriever_node
+from agents.summarizer import SummarizerAgent, summarizer_node
 from memory.memory import Memory
 from langchain.llms import HuggingFacePipeline
 from langgraph.graph import StateGraph, END

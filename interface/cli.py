@@ -7,11 +7,14 @@ def main():
         user_query = input("\nEnter your query (or 'exit'): ")
         if user_query.lower() == 'exit':
             break
-        summary = run_flow(user_query)
-        print(f"\n[CogniGraph] Summary:\n{summary}")
-        feedback = input("\nYour feedback (optional, press Enter to skip): ")
-        # Feedback could be logged to memory if needed
-        print("---")
+        result = run_flow(user_query)
+        print(f"[CogniGraph] Action: {result.get('action')}")
+        if 'summary' in result:
+            print(f"[Summary]: {result['summary']}")
+        elif 'documents' in result:
+            print(f"[Documents]: {result['documents']}")
+        else:
+            print("[No result]")
 
 if __name__ == "__main__":
     main()

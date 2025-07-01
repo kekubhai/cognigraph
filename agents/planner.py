@@ -1,11 +1,11 @@
 # Planner Agent Node
 
+from init import get_llm
 from langchain.prompts import PromptTemplate
-from langchain.llms import HuggingFacePipeline
 
 class PlannerAgent:
-    def __init__(self, llm: HuggingFacePipeline):
-        self.llm = llm
+    def __init__(self, llm=None):
+        self.llm = llm or get_llm()
         self.prompt = PromptTemplate(
             input_variables=["query", "history"],
             template=(
@@ -24,3 +24,11 @@ class PlannerAgent:
         if action not in ["retrieve", "summarize", "search"]:
             action = "retrieve"
         return action
+
+def planner_node(state):
+    agent = PlannerAgent()
+    query = state.get("query", "")
+    history = state.get("history", "")
+    action = agent.decide(query, history)
+    state["action"] = action
+    return state
