@@ -19,13 +19,12 @@ EMBEDDING_MODEL = config['model'].get('embedding_model', 'BAAI/bge-base-en-v1.5'
 
 # Initialize Hugging Face LLM pipeline for LangChain
 llm_pipeline = pipeline(
-    "text-generation",
+    "text2text-generation",
     model=MODEL_NAME,
     tokenizer=MODEL_NAME,
     token=HUGGINGFACE_TOKEN,
-    max_length=config['model'].get('max_length', 2048),
-    temperature=config['model'].get('temperature', 0.2),
-    truncation=True
+    max_length=config['model'].get('max_length', 512),
+    temperature=config['model'].get('temperature', 0.2)
 )
 llm = HuggingFacePipeline(pipeline=llm_pipeline)
 

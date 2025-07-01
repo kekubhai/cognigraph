@@ -1,6 +1,7 @@
 model:
-  name: mistralai/Mistral-7B-Instruct-v0.2
-  max_length: 2048
+  name: google/flan-t5-small
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  max_length: 512
   temperature: 0.2
 retriever:
   top_k: 5

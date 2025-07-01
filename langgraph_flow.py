@@ -1,13 +1,11 @@
 # LangGraph workflow setup for CogniGraph
 import os
 import yaml
-from agents.planner import PlannerAgent, planner_node
-from agents.retriever import RetrieverAgent, retriever_node
-from agents.summarizer import SummarizerAgent, summarizer_node
+from agents.planner import PlannerAgent
+from agents.retriever import RetrieverAgent
+from agents.summarizer import SummarizerAgent
 from memory.memory import Memory
-from langchain.llms import HuggingFacePipeline
-from langgraph.graph import StateGraph, END
-from langgraph.graph.state import State
+from init import get_llm, get_embeddings, get_chromadb_path
 from dotenv import load_dotenv
 
 # Load environment variables and config
@@ -17,83 +15,51 @@ def load_config():
         config = yaml.safe_load(f)
     return config
 
-# Agent node functions
-def planner_node(state):
-    query = state["query"]
-    history = state.get("history", "")
-    action = state["planner"].decide(query, history)
-    return {"action": action}
+# Simple function-based workflow for CogniGraph
 
-def retriever_node(state):
-    query = state["query"]
-    docs = state["retriever"].retrieve(query)
-    return {"chunks": docs}
-
-def summarizer_node(state):
-    chunks = state["chunks"]
-    query = state["query"]
-    summary = state["summarizer"].summarize(chunks, query)
-    return {"summary": summary}
-
-# LangGraph state definition
-class CogniGraphState(State):
-    query: str
-    history: str = ""
-    action: str = ""
-    chunks: list = []
-    summary: str = ""
-    planner: object = None
-    retriever: object = None
-    summarizer: object = None
-    memory: object = None
-
+# Simple workflow function
 def run_flow(user_query=None):
+    if not user_query:
+        return {"error": "No query provided"}
+    
+    # Initialize components
     config = load_config()
-    chroma_path = os.getenv("CHROMADB_PATH", "./chromadb")
-    model_name = os.getenv("MODEL_NAME", config["model"]["name"])
-    hf_token = os.getenv("HUGGINGFACE_TOKEN", None)
-    top_k = config["retriever"].get("top_k", 5)
-
-    # Initialize agents
-    llm = HuggingFacePipeline.from_model_id(model_id=model_name, task="text-generation", device=-1, model_kwargs={"temperature": config["model"].get("temperature", 0.2), "max_length": config["model"].get("max_length", 2048)}, huggingfacehub_api_token=hf_token)
-    planner = PlannerAgent(llm)
-    retriever = RetrieverAgent(chroma_path, model_name)
-    summarizer = SummarizerAgent(model_name, hf_token)
     memory = Memory()
+    planner = PlannerAgent()
+    retriever = RetrieverAgent()
+    summarizer = SummarizerAgent()
+    
+    # Create initial state
+    state = {
+        "query": user_query,
+        "history": str(memory.get_history())
+    }
+    
+    # Step 1: Planner decides action
+    action = planner.decide(user_query, state["history"])
+    state["action"] = action
+    
+    # Step 2: Take action based on planner's decision
+    if action == "retrieve":
+        docs = retriever.retrieve(user_query)
+        state["documents"] = docs
+    elif action == "summarize":
+        docs = retriever.retrieve(user_query)
+        state["documents"] = docs
+        summary = summarizer.summarize(docs, user_query)
+        state["summary"] = summary
+    elif action == "search":
+        # Placeholder for search logic
+        state["documents"] = ["[Search not implemented]"]
+    
+    # Step 3: Summarize if needed
+    if "documents" in state and action != "summarize" and state["documents"]:
+        summary = summarizer.summarize(state["documents"], user_query)
+        state["summary"] = summary
+    
+    # Log to memory
+    memory.log(user_query, None, state.get("summary", ""))
+    
+    return state
 
-    # Build LangGraph workflow
-    workflow = StateGraph(CogniGraphState)
-    workflow.add_node("planner", planner_node)
-    workflow.add_node("retriever", retriever_node)
-    workflow.add_node("summarizer", summarizer_node)
-
-    # Edges: planner -> retriever/summarizer, retriever -> summarizer, summarizer -> END
-    def router(state):
-        if state["action"] == "retrieve":
-            return "retriever"
-        elif state["action"] == "summarize":
-            return "summarizer"
-        else:
-            return "retriever"  # fallback
-
-    workflow.add_edge("planner", router)
-    workflow.add_edge("retriever", "summarizer")
-    workflow.add_edge("summarizer", END)
-    workflow.set_entry_point("planner")
-
-    app = workflow.compile()
-
-    print("CogniGraph workflow started. Use the CLI to interact.")
-    if user_query is not None:
-        # For CLI use
-        state = {
-            "query": user_query,
-            "planner": planner,
-            "retriever": retriever,
-            "summarizer": summarizer,
-            "memory": memory
-        }
-        result = app.invoke(state)
-        memory.log(user_query, None, result.get("summary", ""))
-        return result.get("summary", "")
-    # For server/interactive mode, could add loop here
+print("CogniGraph workflow ready. Use the CLI to interact.")
