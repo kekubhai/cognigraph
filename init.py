@@ -1,7 +1,12 @@
 import os
 import yaml
-from langchain.llms import HuggingFacePipeline
-from langchain.embeddings import HuggingFaceEmbeddings
+try:
+    from langchain_community.llms import HuggingFacePipeline
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+except ImportError:
+    # Fallback to older imports if langchain-community is not available
+    from langchain.llms import HuggingFacePipeline
+    from langchain.embeddings import HuggingFaceEmbeddings
 from transformers import pipeline
 from dotenv import load_dotenv
 
