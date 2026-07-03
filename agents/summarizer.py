@@ -7,10 +7,28 @@ class SummarizerAgent:
     def summarize(self, chunks, user_query):
         if not chunks:
             return "No relevant information found."
-        
-        context = "\n".join(chunks)
+
+        max_input_tokens = 400
+        tokenizer = self.llm.pipeline.tokenizer
+        context = ""
+
+        for chunk in chunks:
+            candidate = f"{context}\n{chunk}" if context else chunk
+            token_count = len(tokenizer.encode(candidate, truncation=True))
+            if token_count <= max_input_tokens:
+                context = candidate
+            else:
+                remaining = max_input_tokens - len(tokenizer.encode(context, truncation=True)) if context else max_input_tokens
+                if remaining > 20:
+                    truncated = tokenizer.decode(
+                        tokenizer.encode(chunk, truncation=True)[:remaining],
+                        skip_special_tokens=True
+                    )
+                    context = f"{context}\n{truncated}" if context else truncated
+                break
+
         prompt = f"Summarize the following information to answer the user query: '{user_query}'\n\nInformation:\n{context}\n\nSummary:"
-        result = self.llm.invoke(prompt)  # Updated to use invoke method
+        result = self.llm.invoke(prompt)
         return result
 
 def summarizer_node(state):

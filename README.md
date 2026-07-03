@@ -132,6 +132,10 @@ cognigraph/
 │   └── model_settings.yaml
 ├── data/             # Place your .txt documents here
 │   └── ingest.py     # Document ingestion pipeline
+├── eval/             # RAG evaluation suite
+│   ├── eval_dataset.py  # Test queries with expected answers
+│   ├── metrics.py       # Semantic similarity, F1, faithfulness, coverage
+│   └── evaluate.py      # Evaluation harness
 ├── interface/        # CLI interface
 │   └── cli.py
 ├── memory/           # In-memory conversation history
@@ -141,6 +145,26 @@ cognigraph/
 ├── Dockerfile
 └── docker-compose.yml
 ```
+
+## Evaluation
+
+Quantify RAG pipeline quality with the built-in eval suite:
+
+```bash
+uv run python eval/evaluate.py
+```
+
+**Metrics tracked:**
+
+| Metric | What it measures |
+|--------|-----------------|
+| Semantic similarity | Cosine sim between answer and expected answer (via sentence-transformers) |
+| Token F1 | Word overlap between answer and expected answer |
+| Topic coverage | % of expected topics mentioned in the answer |
+| Faithfulness | % of answer sentences supported by retrieved chunks |
+| Context relevance | Avg cosine sim between query and retrieved chunks |
+
+Add or edit test queries in `eval/eval_dataset.py`. Results are saved to a timestamped JSON report.
 
 ## Roadmap
 
