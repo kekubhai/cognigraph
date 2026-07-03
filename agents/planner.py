@@ -1,7 +1,7 @@
 # Planner Agent Node
 
 from init import get_llm
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 class PlannerAgent:
     def __init__(self, llm=None):

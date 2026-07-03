@@ -43,7 +43,7 @@ User Query
 ## Prerequisites
 
 - Python 3.10+
-- pip
+- [uv](https://docs.astral.sh/uv/#installation)
 
 ## Local Setup
 
@@ -52,27 +52,24 @@ User Query
 git clone <repo-url>
 cd cognigraph
 
-# (Recommended) Create a virtual environment
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-.\venv\Scripts\activate    # Windows
-
-# Install dependencies
-pip install -r requirements.txt
+# Create .venv and install all dependencies
+uv sync
 
 # Configure environment
 cp config/env.example .env
 # Edit .env if needed (defaults work with flan-t5-small)
 
-# Add your documents as .txt files in the data/ directory
+# Add your .txt documents to the data/ directory
 # (PDF support coming soon)
 
 # Ingest documents into ChromaDB
-python data/ingest.py
+uv run python data/ingest.py
 
 # Run the CLI
-python main.py
+uv run python main.py
 ```
+
+> No manual activation needed — `uv run` automatically uses the project's `.venv`.
 
 ## Docker
 
@@ -107,7 +104,7 @@ retriever:
 ## Usage
 
 ```bash
-python main.py
+uv run python main.py
 ```
 
 Type a question at the prompt. For example:
@@ -140,7 +137,7 @@ cognigraph/
 ├── memory/           # In-memory conversation history
 ├── main.py           # Entry point
 ├── langgraph_flow.py # Agent orchestration workflow
-├── requirements.txt
+├── pyproject.toml    # Project config & dependencies
 ├── Dockerfile
 └── docker-compose.yml
 ```

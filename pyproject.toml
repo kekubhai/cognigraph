@@ -1,0 +1,21 @@
+[project]
+name = "cognigraph"
+version = "0.1.0"
+description = "Autonomous Multi-Agent RAG System using LangGraph, LangChain, ChromaDB, and Hugging Face Transformers."
+requires-python = ">=3.10"
+dependencies = [
+    "langchain",
+    "langchain-community",
+    "sentence-transformers",
+    "langgraph",
+    "chromadb",
+    "pdfplumber",
+    "pypdf",
+    "python-dotenv",
+    "rich",
+    "fastapi",
+    "uvicorn",
+    "huggingface_hub",
+    "langchain-huggingface>=1.2.2",
+    "transformers<5",
+]

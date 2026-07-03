@@ -1,39 +1,32 @@
 import os
 import yaml
-try:
-    from langchain_community.llms import HuggingFacePipeline
-    from langchain_community.embeddings import HuggingFaceEmbeddings
-except ImportError:
-    # Fallback to older imports if langchain-community is not available
-    from langchain.llms import HuggingFacePipeline
-    from langchain.embeddings import HuggingFaceEmbeddings
-from transformers import pipeline
+from langchain_huggingface import HuggingFacePipeline, HuggingFaceEmbeddings
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# Load model settings from YAML
 with open('config/model_settings.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
 MODEL_NAME = os.getenv('MODEL_NAME', config['model']['name'])
-HUGGINGFACE_TOKEN = os.getenv('HUGGINGFACE_TOKEN', None)
+HUGGINGFACE_TOKEN = os.getenv('HUGGINGFACE_TOKEN', None) or None
 CHROMADB_PATH = os.getenv('CHROMADB_PATH', './chromadb')
 EMBEDDING_MODEL = config['model'].get('embedding_model', 'BAAI/bge-base-en-v1.5')
 
-# Initialize Hugging Face LLM pipeline for LangChain
-llm_pipeline = pipeline(
-    "text2text-generation",
-    model=MODEL_NAME,
-    tokenizer=MODEL_NAME,
-    token=HUGGINGFACE_TOKEN,
-    max_length=config['model'].get('max_length', 512),
-    temperature=config['model'].get('temperature', 0.2)
-)
-llm = HuggingFacePipeline(pipeline=llm_pipeline)
+model_kwargs = {}
+if HUGGINGFACE_TOKEN:
+    model_kwargs["token"] = HUGGINGFACE_TOKEN
 
-# Initialize embedding model for ChromaDB
+llm = HuggingFacePipeline.from_model_id(
+    model_id=MODEL_NAME,
+    task="text2text-generation",
+    model_kwargs=model_kwargs,
+    pipeline_kwargs={
+        "max_length": config['model'].get('max_length', 512),
+    },
+    device=-1,
+)
+
 embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
 
