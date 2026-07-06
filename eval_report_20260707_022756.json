@@ -1,0 +1,114 @@
+{
+  "results": [
+    {
+      "query": "Who founded the Mauryan Empire?",
+      "semantic_similarity": 1.0,
+      "token_f1": 1.0,
+      "topic_coverage": 0.5,
+      "faithfulness": 1.0,
+      "context_relevance": 0.152,
+      "num_chunks": 5,
+      "answer_length": 2
+    },
+    {
+      "query": "What technology stack does CogniGraph use?",
+      "semantic_similarity": 0.3163,
+      "token_f1": 0.1628,
+      "topic_coverage": 0.8,
+      "faithfulness": 1.0,
+      "context_relevance": 0.4334,
+      "num_chunks": 5,
+      "answer_length": 370
+    },
+    {
+      "query": "How do I install CogniGraph dependencies?",
+      "semantic_similarity": 0.2975,
+      "token_f1": 0.0,
+      "topic_coverage": 0.0,
+      "faithfulness": 1.0,
+      "context_relevance": 0.474,
+      "num_chunks": 5,
+      "answer_length": 5
+    },
+    {
+      "query": "Who was Chanakya?",
+      "semantic_similarity": 0.5517,
+      "token_f1": 0.0625,
+      "topic_coverage": 0.0,
+      "faithfulness": 1.0,
+      "context_relevance": 0.1523,
+      "num_chunks": 5,
+      "answer_length": 269
+    },
+    {
+      "query": "What are the deployment options for CogniGraph?",
+      "semantic_similarity": 0.5432,
+      "token_f1": 0.5217,
+      "topic_coverage": 0.4,
+      "faithfulness": 1.0,
+      "context_relevance": 0.4389,
+      "num_chunks": 5,
+      "answer_length": 7
+    },
+    {
+      "query": "What is the role of the Planner Agent?",
+      "semantic_similarity": 0.5834,
+      "token_f1": 0.6207,
+      "topic_coverage": 0.6667,
+      "faithfulness": 1.0,
+      "context_relevance": 0.2959,
+      "num_chunks": 5,
+      "answer_length": 9
+    },
+    {
+      "query": "What embedding model does CogniGraph use by default?",
+      "semantic_similarity": 0.1676,
+      "token_f1": 0.1446,
+      "topic_coverage": 1.0,
+      "faithfulness": 1.0,
+      "context_relevance": 0.4267,
+      "num_chunks": 5,
+      "answer_length": 101
+    },
+    {
+      "query": "What was the Nanda Dynasty?",
+      "semantic_similarity": 0.7095,
+      "token_f1": 0.5,
+      "topic_coverage": 0.6667,
+      "faithfulness": 1.0,
+      "context_relevance": 0.1441,
+      "num_chunks": 5,
+      "answer_length": 318
+    },
+    {
+      "query": "What are the use cases of CogniGraph?",
+      "semantic_similarity": 0.2667,
+      "token_f1": 0.1111,
+      "topic_coverage": 0.0,
+      "faithfulness": 1.0,
+      "context_relevance": 0.4004,
+      "num_chunks": 5,
+      "answer_length": 4
+    },
+    {
+      "query": "Where did Chandragupta spend his youth?",
+      "semantic_similarity": 0.2459,
+      "token_f1": 0.0,
+      "topic_coverage": 0.0,
+      "faithfulness": 1.0,
+      "context_relevance": 0.1306,
+      "num_chunks": 5,
+      "answer_length": 2
+    }
+  ],
+  "summary": {
+    "semantic_similarity": 0.4682,
+    "token_f1": 0.3123,
+    "topic_coverage": 0.4033,
+    "faithfulness": 1.0,
+    "context_relevance": 0.3048,
+    "total_queries": 10,
+    "avg_chunks": 5.0,
+    "avg_answer_length": 108.7
+  }
+}

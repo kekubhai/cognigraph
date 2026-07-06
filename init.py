@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-with open('config/model_settings.yaml', 'r') as f:
+_base_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(_base_dir, 'config', 'model_settings.yaml'), 'r') as f:
     config = yaml.safe_load(f)
 
 MODEL_NAME = os.getenv('MODEL_NAME', config['model']['name'])
